@@ -1,0 +1,18 @@
+const Product = require('../models/Product');
+
+// Fetch all products with search logic
+exports.getAllProducts = async (req, res) => {
+    try {
+        const keyword = req.query.keyword ? {
+            name: {
+                $regex: req.query.keyword,
+                $options: 'i' // Case-insensitive search
+            }
+        } : {};
+
+        const products = await Product.find({ ...keyword });
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ message: "Server Error", error });
+    }
+};
